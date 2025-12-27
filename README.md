@@ -1,16 +1,94 @@
-# React + Vite
+# ♻️ C&D Waste Optimizer  
+### Smart Construction & Demolition Waste Management Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Status](https://img.shields.io/badge/Status-Active-success)
+![Tech](https://img.shields.io/badge/Built%20With-React%20%7C%20CSS-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 Overview
 
-## React Compiler
+**C&D Waste Optimizer** is a web-based platform designed to address the growing problem of construction and demolition (C&D) waste.  
+It enables structured categorization, visualization, and reuse planning for materials such as concrete, steel, bricks, and aggregates.
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+The goal is to support **sustainable construction**, **resource recovery**, and **data-driven decision making**.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🌍 Why This Matters
+
+- Construction and demolition waste accounts for **~30% of global solid waste**
+- India generates **150+ million tonnes** of C&D waste annually
+- Only **~1%** is currently recycled
+- The market is expected to reach **$362.9B by 2033**
+
+This project helps bridge the gap between waste generation and circular reuse.
+
+---
+
+## 🚀 Features
+
+✔ Interactive material selection  
+✔ Clean & modern UI  
+✔ Modular architecture  
+✔ Expandable for AI-driven waste prediction  
+✔ Mobile-responsive layout  
+✔ Easy integration with datasets & APIs  
+
+---
+
+## 🧱 Supported Material Modules
+
+- 🪨 Granite  
+- 🏗️ Loose Cement  
+- ⚙️ Steel  
+- 🌫️ Slag  
+- 🧱 Bricks  
+- 🔧 RCC & HDPE  
+- 📊 Dataset Analysis  
+
+Each module can be extended with:
+- Waste estimation logic  
+- Environmental impact scores  
+- Recycling suggestions  
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|------|------------|
+| Frontend | React (Vite) |
+| Styling | CSS / Inline Styling |
+| Routing | React Router |
+| Version Control | Git & GitHub |
+
+---
+
+## 📁 Project Structure
+
+C-D-waste-optimizer/
+│
+├── src/
+│ ├── components/
+│ │ └── Navbar.jsx
+│ ├── pages/
+│ │ ├── Landing.jsx
+│ │ ├── Granite.jsx
+│ │ ├── Steel.jsx
+│ │ ├── Bricks.jsx
+│ │ ├── Dataset.jsx
+│ │ └── ...
+│ ├── App.jsx
+│ └── main.jsx
+│
+├── public/
+├── package.json
+└── README.md
+
+
+
+cd C-D-waste-optimizer
+npm install
+npm run dev
