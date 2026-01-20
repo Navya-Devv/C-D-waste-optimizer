@@ -10,12 +10,7 @@ export default function SteelPage() {
     steel_25mm_mt: '',
     steel_32mm_mt: '',
     total_procured_mt: '',
-    built_up_area_sqft: '',
-    floors: '',
-    consumption_mt: '',
-    waste_mt: '',
-    waste_percent: '',
-    relevance_score: ''
+    built_up_area_sqft: ''
   });
 
   const [results, setResults] = useState(null);
@@ -29,54 +24,77 @@ export default function SteelPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     
-    // Simulate API call - replace with actual backend endpoint
-    setTimeout(() => {
-      const totalProcured = parseFloat(formData.total_procured_mt) || 0;
-      const builtUpArea = parseFloat(formData.built_up_area_sqft) || 0;
-      const floors = parseFloat(formData.floors) || 1;
-      
-      // Calculate predicted waste based on industry standards (5-8% typical waste)
-      const predictedWasteMT = (totalProcured * 0.065).toFixed(2);
-      const predictedConsumption = (totalProcured * 0.935).toFixed(2);
-      const wastePercentage = "5-8%";
-      
-      setResults({
-        predictions: {
-          predictedWasteMT: predictedWasteMT,
-          wastePercentage: wastePercentage,
-          predictedConsumption: predictedConsumption,
-          confidenceScore: "89%",
-          totalProcured: totalProcured
+    try {
+      // Call backend API
+      const response = await fetch('http://localhost:5000/predict/steel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        wasteBySize: {
-          waste_8mm: (parseFloat(formData.steel_8mm_mt) * 0.07).toFixed(2),
-          waste_10mm: (parseFloat(formData.steel_10mm_mt) * 0.06).toFixed(2),
-          waste_12mm: (parseFloat(formData.steel_12mm_mt) * 0.065).toFixed(2),
-          waste_16mm: (parseFloat(formData.steel_16mm_mt) * 0.06).toFixed(2),
-          waste_20mm: (parseFloat(formData.steel_20mm_mt) * 0.065).toFixed(2),
-          waste_25mm: (parseFloat(formData.steel_25mm_mt) * 0.07).toFixed(2),
-          waste_32mm: (parseFloat(formData.steel_32mm_mt) * 0.08).toFixed(2)
-        },
-        breakdown: {
-          cuttingWaste: (predictedWasteMT * 0.45).toFixed(2),
-          bendingRejects: (predictedWasteMT * 0.25).toFixed(2),
-          corrosionDamage: (predictedWasteMT * 0.20).toFixed(2),
-          handlingLoss: (predictedWasteMT * 0.10).toFixed(2)
-        },
-        recommendations: [
-          "Optimize bar cutting lists to minimize offcuts and material waste",
-          "Use bar bending schedules to reduce bending errors and rejections",
-          "Store steel in covered, dry areas to prevent corrosion damage",
-          "Implement proper handling procedures with lifting equipment",
-          "Plan reinforcement layout to use standard bar lengths efficiently",
-          "Train workers on proper cutting and bending techniques"
-        ]
+        body: JSON.stringify({
+          steel_8mm_mt: parseFloat(formData.steel_8mm_mt) || 0,
+          steel_10mm_mt: parseFloat(formData.steel_10mm_mt) || 0,
+          steel_12mm_mt: parseFloat(formData.steel_12mm_mt) || 0,
+          steel_16mm_mt: parseFloat(formData.steel_16mm_mt) || 0,
+          steel_20mm_mt: parseFloat(formData.steel_20mm_mt) || 0,
+          steel_25mm_mt: parseFloat(formData.steel_25mm_mt) || 0,
+          steel_32mm_mt: parseFloat(formData.steel_32mm_mt) || 0,
+          total_procured_mt: parseFloat(formData.total_procured_mt) || 0,
+          built_up_area_sqft: parseFloat(formData.built_up_area_sqft) || 0,
+        }),
       });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        const prediction = data.prediction;
+        const predictedWasteMT = prediction.waste_mt;
+        
+        setResults({
+          predictions: {
+            predictedWasteMT: predictedWasteMT.toFixed(2),
+            wastePercentage: prediction.waste_percentage.toFixed(2) + "%",
+            predictedConsumption: prediction.consumption_mt.toFixed(2),
+            confidenceScore: "ML Model",
+            totalProcured: prediction.total_procured_mt
+          },
+          wasteBySize: {
+            waste_8mm: (parseFloat(formData.steel_8mm_mt) * prediction.waste_percentage / 100).toFixed(2),
+            waste_10mm: (parseFloat(formData.steel_10mm_mt) * prediction.waste_percentage / 100).toFixed(2),
+            waste_12mm: (parseFloat(formData.steel_12mm_mt) * prediction.waste_percentage / 100).toFixed(2),
+            waste_16mm: (parseFloat(formData.steel_16mm_mt) * prediction.waste_percentage / 100).toFixed(2),
+            waste_20mm: (parseFloat(formData.steel_20mm_mt) * prediction.waste_percentage / 100).toFixed(2),
+            waste_25mm: (parseFloat(formData.steel_25mm_mt) * prediction.waste_percentage / 100).toFixed(2),
+            waste_32mm: (parseFloat(formData.steel_32mm_mt) * prediction.waste_percentage / 100).toFixed(2)
+          },
+          breakdown: {
+            cuttingWaste: (predictedWasteMT * 0.45).toFixed(2),
+            bendingRejects: (predictedWasteMT * 0.25).toFixed(2),
+            corrosionDamage: (predictedWasteMT * 0.20).toFixed(2),
+            handlingLoss: (predictedWasteMT * 0.10).toFixed(2)
+          },
+          recommendations: [
+            "Optimize bar cutting lists to minimize offcuts and material waste",
+            "Use bar bending schedules to reduce bending errors and rejections",
+            "Store steel in covered, dry areas to prevent corrosion damage",
+            "Implement proper handling procedures with lifting equipment",
+            "Plan reinforcement layout to use standard bar lengths efficiently",
+            "Train workers on proper cutting and bending techniques"
+          ]
+        });
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error calling prediction API:', error);
+      alert('Failed to get prediction. Make sure the backend server is running on http://localhost:5000');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -614,75 +632,6 @@ export default function SteelPage() {
                     className="form-input"
                     placeholder="Total built-up area"
                     value={formData.built_up_area_sqft}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">Floors</label>
-                  <input
-                    type="number"
-                    name="floors"
-                    className="form-input"
-                    placeholder="Number of floors"
-                    value={formData.floors}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">Consumption (MT)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    name="consumption_mt"
-                    className="form-input"
-                    placeholder="Actual consumption"
-                    value={formData.consumption_mt}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-            </div>
-            
-            <div className="form-section">
-              <h3 className="section-header">Waste Analysis</h3>
-              <div className="form-grid">
-                <div className="form-group">
-                  <label className="form-label">Waste (MT)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    name="waste_mt"
-                    className="form-input"
-                    placeholder="Total waste generated"
-                    value={formData.waste_mt}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">Waste Percent</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    name="waste_percent"
-                    className="form-input"
-                    placeholder="Waste percentage"
-                    value={formData.waste_percent}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                
-                <div className="form-group">
-                  <label className="form-label">Relevance Score</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    name="relevance_score"
-                    className="form-input"
-                    placeholder="Data relevance score"
-                    value={formData.relevance_score}
                     onChange={handleInputChange}
                   />
                 </div>

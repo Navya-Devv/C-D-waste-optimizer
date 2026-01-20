@@ -3,10 +3,7 @@ import Navbar from '../components/Navbar';
 export default function GranitePage() {
   const [formData, setFormData] = useState({
     sqFt: '',
-    nos: '',
-    wasted_nos: '',
-    waste_percentage: '',
-    wasted_percentage_sqft: ''
+    nos: ''
   });
 
   const [results, setResults] = useState(null);
@@ -20,39 +17,58 @@ export default function GranitePage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     
-    // Simulate API call - replace with actual backend endpoint
-    setTimeout(() => {
-      const totalSqFt = parseFloat(formData.sqFt) || 0;
-      const totalPieces = parseFloat(formData.nos) || 0;
-      const predictedWastePieces = Math.round(totalPieces * 0.08); // 8% average waste
-      const predictedWasteSqFt = (totalSqFt * 0.12).toFixed(2); // 12% average waste
-      
-      setResults({
-        predictions: {
-          predictedWastePieces: predictedWastePieces,
-          predictedWasteSqFt: predictedWasteSqFt,
-          wastePercentage: "8-12%",
-          confidenceScore: "87%",
-          totalInput: totalSqFt,
-          totalPieces: totalPieces
+    try {
+      // Call backend API
+      const response = await fetch('http://localhost:5000/predict/granite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        breakdown: {
-          breakageWaste: (predictedWastePieces * 0.6).toFixed(0),
-          cuttingWaste: (predictedWastePieces * 0.25).toFixed(0),
-          handlingDamage: (predictedWastePieces * 0.15).toFixed(0)
-        },
-        recommendations: [
-          "Store granite slabs on padded supports to reduce breakage",
-          "Plan cuts carefully to minimize offcuts and waste",
-          "Use water jet cutting for precision and reduced material loss",
-          "Implement proper handling procedures during transport"
-        ]
+        body: JSON.stringify({
+          sqft: parseFloat(formData.sqFt) || 0,
+          nos: parseFloat(formData.nos) || 0,
+        }),
       });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        const prediction = data.prediction;
+        
+        setResults({
+          predictions: {
+            predictedWastePieces: prediction.wasted_nos.toFixed(2),
+            predictedWasteSqFt: prediction.wasted_sqft.toFixed(2),
+            wastePercentage: prediction.waste_percentage.toFixed(2) + "%",
+            confidenceScore: "ML Model",
+            totalInput: prediction.total_sqft,
+            totalPieces: prediction.total_nos
+          },
+          breakdown: {
+            breakageWaste: (prediction.wasted_nos * 0.6).toFixed(0),
+            cuttingWaste: (prediction.wasted_nos * 0.25).toFixed(0),
+            handlingDamage: (prediction.wasted_nos * 0.15).toFixed(0)
+          },
+          recommendations: [
+            "Store granite slabs on padded supports to reduce breakage",
+            "Plan cuts carefully to minimize offcuts and waste",
+            "Use water jet cutting for precision and reduced material loss",
+            "Implement proper handling procedures during transport"
+          ]
+        });
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error calling prediction API:', error);
+      alert('Failed to get prediction. Make sure the backend server is running on http://localhost:5000');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -388,44 +404,6 @@ export default function GranitePage() {
                   className="form-input"
                   placeholder="Enter total number of pieces"
                   value={formData.nos}
-                  onChange={handleInputChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Wasted_nos</label>
-                <input
-                  type="number"
-                  name="wasted_nos"
-                  className="form-input"
-                  placeholder="Enter number of wasted pieces"
-                  value={formData.wasted_nos}
-                  onChange={handleInputChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Waste %</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="waste_percentage"
-                  className="form-input"
-                  placeholder="Enter waste percentage"
-                  value={formData.waste_percentage}
-                  onChange={handleInputChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Wasted %(sqft.)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="wasted_percentage_sqft"
-                  className="form-input"
-                  placeholder="Enter wasted percentage in sqft"
-                  value={formData.wasted_percentage_sqft}
                   onChange={handleInputChange}
                 />
               </div>

@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 export default function LooseCementPage() {
   const [formData, setFormData] = useState({
-    rec_qty: '',
-    waste_percentage: '',
-    wastage: '',
-    usage: ''
+    rec_qty: ''
   });
 
   const [results, setResults] = useState(null);
@@ -19,39 +16,57 @@ export default function LooseCementPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     
-    // Simulate API call - replace with actual backend endpoint
-    setTimeout(() => {
-      const recQty = parseFloat(formData.rec_qty) || 0;
-      const usage = parseFloat(formData.usage) || 0;
-      const predictedWastage = (recQty * 0.07).toFixed(2); // 7% average waste
-      const predictedWastePercent = "5-9%";
-      
-      setResults({
-        predictions: {
-          predictedWastage: predictedWastage,
-          predictedWastePercent: predictedWastePercent,
-          expectedUsage: (recQty * 0.93).toFixed(2),
-          confidenceScore: "91%",
-          totalReceived: recQty
+    try {
+      // Call backend API
+      const response = await fetch('http://localhost:5000/predict/concrete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        breakdown: {
-          spillageWaste: (predictedWastage * 0.35).toFixed(2),
-          expirationWaste: (predictedWastage * 0.30).toFixed(2),
-          moistureWaste: (predictedWastage * 0.25).toFixed(2),
-          bagHandling: (predictedWastage * 0.10).toFixed(2)
-        },
-        recommendations: [
-          "Store cement in dry, elevated locations to prevent moisture damage",
-          "Use FIFO (First In, First Out) method to minimize expiration waste",
-          "Handle bags carefully to reduce spillage during transport",
-          "Monitor storage conditions regularly for humidity and temperature"
-        ]
+        body: JSON.stringify({
+          rec_qty: parseFloat(formData.rec_qty) || 0,
+        }),
       });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        const prediction = data.prediction;
+        
+        setResults({
+          predictions: {
+            predictedWastage: prediction.wastage.toFixed(2),
+            predictedWastePercent: prediction.waste_percentage.toFixed(2) + "%",
+            expectedUsage: prediction.usage.toFixed(2),
+            confidenceScore: "ML Model",
+            totalReceived: prediction.rec_qty
+          },
+          breakdown: {
+            spillageWaste: (prediction.wastage * 0.35).toFixed(2),
+            expirationWaste: (prediction.wastage * 0.30).toFixed(2),
+            moistureWaste: (prediction.wastage * 0.25).toFixed(2),
+            bagHandling: (prediction.wastage * 0.10).toFixed(2)
+          },
+          recommendations: [
+            "Store cement in dry, elevated locations to prevent moisture damage",
+            "Use FIFO (First In, First Out) method to minimize expiration waste",
+            "Handle bags carefully to reduce spillage during transport",
+            "Monitor storage conditions regularly for humidity and temperature"
+          ]
+        });
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error calling prediction API:', error);
+      alert('Failed to get prediction. Make sure the backend server is running on http://localhost:5000');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -416,45 +431,6 @@ export default function LooseCementPage() {
                   className="form-input"
                   placeholder="Enter received quantity (kg or bags)"
                   value={formData.rec_qty}
-                  onChange={handleInputChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Waste %</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="waste_percentage"
-                  className="form-input"
-                  placeholder="Enter waste percentage"
-                  value={formData.waste_percentage}
-                  onChange={handleInputChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Wastage</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="wastage"
-                  className="form-input"
-                  placeholder="Enter total wastage amount"
-                  value={formData.wastage}
-                  onChange={handleInputChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label className="form-label">Usage</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  name="usage"
-                  className="form-input"
-                  placeholder="Enter actual usage amount"
-                  value={formData.usage}
                   onChange={handleInputChange}
                 />
               </div>

@@ -5,8 +5,6 @@ const MATERIALS = [
   { name: "Granite", link: "/granite", icon: "🪨" },
   { name: "Loose Cement", link: "/loose", icon: "🏗️" },
   { name: "Steel", link: "/steel", icon: "⚙️" },
-  { name: "Slag", link: "/slag", icon: "🌫️" },
-  { name: "Bricks", link: "/bricks", icon: "🧱" },
   { name: "RCC & HDPE", link: "/rcc", icon: "🔧" },
   { name: "Dataset", link: "/dataset", icon: "📊" }
 ];
