@@ -63,13 +63,4 @@ Promotes resource efficiency and data-driven waste reduction in construction.
 
 The dataset includes controlled synthetic augmentation and is intended for exploratory modeling and benchmarking — not deterministic forecasting.
 
----
-
-## 👥 Authors  
-R. V. College of Engineering (RVCE), Bengaluru  
-
-- Rajeswara Rao K. V. S.  
-- Ishan Kumar  
-- Navya Madiraju  
-- Anant Ahlawat  
-- Aayush Pandey  
+  
