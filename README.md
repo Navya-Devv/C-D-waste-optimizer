@@ -1,75 +1,75 @@
-Sustainable Urban Construction Data Pipeline
-Waste Prediction for the Indian Construction Sector
+# 🏗️ Sustainable Urban Construction Data Pipeline  
+### Waste Prediction in the Indian Construction Sector
 
 A hybrid, statistically grounded framework for predicting construction material wastage in data-scarce environments.
 
-This project combines limited real-world procurement records with controlled synthetic augmentation to enable reliable exploratory modeling, benchmarking, and decision-support for sustainable construction planning.
+This project integrates limited real-world procurement data with controlled synthetic augmentation to enable exploratory modeling, benchmarking, and decision-support for sustainable construction planning.
 
-🔍 Problem
+---
 
-Construction projects in India often lack standardized material wastage reporting.
-The absence of structured datasets limits reliable forecasting, optimization, and sustainability assessment.
+## 🔍 The Problem
 
-⚙️ Solution
+Construction projects in India lack standardized material wastage reporting.  
+Sparse datasets limit reliable forecasting, optimization, and sustainability analysis.
 
-We propose a reproducible data pipeline that:
+---
 
-Cleans and validates procurement records using physical feasibility constraints
+## ⚙️ Our Approach
 
-Expands coverage through controlled bootstrap-based synthetic augmentation
+- Structured data cleaning with physical feasibility constraints  
+- Bootstrap-based synthetic data augmentation with bounded Gaussian perturbation  
+- Relevance-based extrapolation confidence metric  
+- Material-specific XGBoost regression models  
 
-Introduces a relevance-based extrapolation confidence metric
+**Materials Modeled:**
+- Steel  
+- Cement  
+- Granite  
+- Sand  
+- Bricks  
 
-Trains material-specific XGBoost regression models for waste percentage prediction
+---
 
-Materials modeled:
+## 📊 Key Highlights
 
-Steel
+- ~600–700 statistically consistent records per material  
+- Non-linear waste modeling  
+- Extrapolation reliability scoring  
+- Lightweight decision-support architecture  
 
-Cement
+---
 
-Granite
+## 🏗️ Deployment Vision
 
-Sand
+Engineers input project parameters →  
+Backend models predict:
 
-Bricks
+- Waste percentage  
+- Waste quantity  
+- Scenario-based procurement insights  
 
-📊 Key Features
+Designed for proactive material optimization during early-stage planning.
 
-Statistically consistent synthetic dataset (~600–700 records per material)
+---
 
-Non-linear waste modeling via XGBoost
+## 🌍 Sustainability Impact
 
-Extrapolation confidence scoring
+Aligned with **UN SDG-11 (Sustainable Cities & Communities)**  
+Promotes resource efficiency and data-driven waste reduction in construction.
 
-Lightweight decision-support architecture for early-stage planning
+---
 
-🏗️ Deployment Vision
+## ⚠️ Disclaimer
 
-Designed as a client–server advisory system where engineers input project parameters and receive:
+The dataset includes controlled synthetic augmentation and is intended for exploratory modeling and benchmarking — not deterministic forecasting.
 
-Estimated waste percentage
+---
 
-Waste quantity projections
+## 👥 Authors  
+R. V. College of Engineering (RVCE), Bengaluru  
 
-Scenario-based procurement insights
-
-Supports proactive material optimization instead of post-construction auditing.
-
-🌍 Sustainability Impact
-
-Aligned with SDG-11 (Sustainable Cities & Communities) by enabling data-driven waste reduction and resource-efficient construction practices.
-
-⚠️ Note
-
-This framework operates under partially synthetic augmentation and is intended for exploratory modeling and benchmarking — not deterministic forecasting.
-
-👥 Authors
-
-R. V. College of Engineering (RVCE), Bengaluru
-
-Rajeswara Rao K. V. S.
-Ishan Kumar
-Navya Madiraju
-Anant Ahlawat
-Aayush Pandey
+- Rajeswara Rao K. V. S.  
+- Ishan Kumar  
+- Navya Madiraju  
+- Anant Ahlawat  
+- Aayush Pandey  
